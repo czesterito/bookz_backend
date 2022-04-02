@@ -1,12 +1,15 @@
 package com.project.bookz.controllers;
 
+import com.project.bookz.dto.UserDto;
 import com.project.bookz.models.User;
+import com.project.bookz.services.keycloak.KeycloakAdminClientService;
 import com.project.bookz.services.user.IUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.Optional;
 
 @RestController
@@ -15,7 +18,9 @@ import java.util.Optional;
 public class UserController {
 
     private final IUserService userService;
+    private final KeycloakAdminClientService keycloakService;
 
+    @RolesAllowed("user")
     @GetMapping("/")
     public ResponseEntity<?> getAllUsers(){
         try{
@@ -27,6 +32,7 @@ public class UserController {
         }
     }
 
+    @RolesAllowed("user")
     @GetMapping("/{user_id}")
     public ResponseEntity<?> getUser(@PathVariable Integer user_id){
         try {
@@ -42,7 +48,8 @@ public class UserController {
         }
     }
 
-    @GetMapping("/email")
+    @RolesAllowed("user")
+    @GetMapping("")
     public ResponseEntity<?> getUserByEmail(@RequestParam String email){
         try {
             Optional<User> optionalUser = userService.findUserByEmail(email);
@@ -56,6 +63,7 @@ public class UserController {
         }
     }
 
+    @RolesAllowed("user")
     @GetMapping("/username")
     public ResponseEntity<?> getUserByName(@RequestParam String username){
         try {
@@ -70,6 +78,7 @@ public class UserController {
         }
     }
 
+    @RolesAllowed("user")
     @GetMapping("/{user_id}/books")
     public ResponseEntity<?>getUserBooks(@PathVariable Integer user_id) {
         try {
@@ -80,12 +89,16 @@ public class UserController {
         }
     }
 
+
     @PostMapping("/")
-    public ResponseEntity<?> createNewUser(@RequestBody User user){
+    public ResponseEntity<?> createNewUser(@RequestBody UserDto userDTO){
         try {
-            if (userService.checkIfEmailIsTaken(user.getEmail())) return emailTakenResponse();
+            if (userService.checkIfEmailIsTaken(userDTO.getEmail())) return emailTakenResponse();
+            if (userService.checkIfNameIsTaken(userDTO.getUsername())) return nameTakenResponse();
 
             else {
+                keycloakService.addUser(userDTO.getEmail(), userDTO.getUsername(), userDTO.getPassword());
+                User user = new User( userDTO.getEmail(), userDTO.getUsername());
                 return new ResponseEntity<>(
                         userService.addNewUser(user),
                         HttpStatus.CREATED);
@@ -95,11 +108,13 @@ public class UserController {
         }
     }
 
+    @RolesAllowed("user")
     @DeleteMapping("/{user_id}")
     public ResponseEntity<?> deleteUser(@PathVariable Integer user_id){
         try {
             Optional<User> optionalUser = userService.findUserById(user_id);
             if(optionalUser.isPresent()){
+                keycloakService.deleteUser(optionalUser.get().getEmail());
                 userService.deleteUser(user_id);
                 return new ResponseEntity<>(
                         String.format("User with id: %d was deleted", user_id),
@@ -111,6 +126,7 @@ public class UserController {
         }
     }
 
+    @RolesAllowed("user")
     @PutMapping("/{user_id}")
     public ResponseEntity<?> updateUser(@PathVariable Integer user_id, @RequestBody User user){
         try {

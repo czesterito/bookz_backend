@@ -13,7 +13,7 @@ public interface IBookService {
 
     void deleteBook(Integer id);
 
-    Book addNewBook(Book newTeam);
+    Book addNewBook(Book newBook);
 
     Book updateBook(Book oldBook, Book newBook);
 

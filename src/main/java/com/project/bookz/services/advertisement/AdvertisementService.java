@@ -4,6 +4,9 @@ import com.project.bookz.models.Advertisement;
 import com.project.bookz.repositories.AdvertisementRepository;
 import com.project.bookz.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -44,9 +47,19 @@ public class AdvertisementService implements IAdvertisementService{
     }
 
     @Override
-    public List<Advertisement> findBy(String text, String category, String city, Integer id) {
-        List<Advertisement> advertisements = advertisementRepository.findAdvertisementByName(text, category, city);
-        if(userRepository.findById(id).isPresent()) advertisements.removeAll(advertisementRepository.findByBook_User_UserId(id));
-        return advertisements;
+    public Page<Advertisement> findBy(String text, String category, String city, Integer id, Integer pageNr) {
+        Pageable page = PageRequest.of(pageNr, 10);
+        return advertisementRepository.findAdvertisementByName(text, category, city, id, page);
+    }
+
+    @Override
+    public List<Advertisement> findAllUserAdvertisements(Integer id) {
+        return new ArrayList<>(advertisementRepository.findByBookUserUserId(id));
+    }
+
+    @Override
+    public Advertisement changeAdvertisementDescription(Advertisement advertisement, String description) {
+        advertisement.setDescription(description);
+        return advertisementRepository.save(advertisement);
     }
 }

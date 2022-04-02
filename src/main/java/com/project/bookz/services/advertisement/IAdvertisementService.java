@@ -1,6 +1,7 @@
 package com.project.bookz.services.advertisement;
 
 import com.project.bookz.models.Advertisement;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,9 +14,13 @@ public interface IAdvertisementService {
 
     void deleteAdvertisement(Integer id);
 
-    Advertisement addNewAdvertisement(Advertisement newTeam);
+    Advertisement addNewAdvertisement(Advertisement newAdvertisement);
 
     Advertisement updateAdvertisement(Advertisement oldAdvertisement, Advertisement newAdvertisement);
 
-    List<Advertisement> findBy(String text, String category, String city, Integer id);
+    Page<Advertisement> findBy(String text, String category, String city, Integer id, Integer pageNr);
+
+    List<Advertisement> findAllUserAdvertisements(Integer id);
+
+    Advertisement changeAdvertisementDescription(Advertisement advertisement, String description);
 }

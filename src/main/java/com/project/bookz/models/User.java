@@ -6,10 +6,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity(name = "USER")
-@Table(name = "`USER`", uniqueConstraints = {
-        @UniqueConstraint(name = "user_email_unique", columnNames = "email"),
-        @UniqueConstraint(name = "user_username_unique", columnNames = "username")
-})
+@Table(name = "`USER`")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,8 +16,6 @@ public class User {
     private String email;
     @Column(name = "username", nullable = false, columnDefinition = "TEXT")
     private String username;
-    @Column(name = "password", nullable = false, columnDefinition = "TEXT")
-    private String password;
 
     @OneToMany(mappedBy = "user", cascade = {CascadeType.ALL, CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
     @JsonIgnore
@@ -29,11 +24,9 @@ public class User {
     public User() {
     }
 
-    public User(String email, String username, String password, List<Book> books) {
+    public User(String email, String username) {
         this.email = email;
         this.username = username;
-        this.password = password;
-        this.books = books;
     }
 
     public Integer getUserId() {
@@ -58,14 +51,6 @@ public class User {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public List<Book> getBooks() {

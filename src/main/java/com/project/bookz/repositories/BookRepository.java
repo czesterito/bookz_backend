@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface BookRepository extends JpaRepository<Book, Integer> {
-    List<Book> findByUser_UserId(Integer integer);
+    List<Book> findByUserUserId(Integer integer);
 
 //    @Query("SELECT b FROM BOOK b WHERE LOWER(CONCAT(b.author, ' ', b.title)) LIKE CONCAT('%',:bookName,'%') " +
 //            "OR LOWER(CONCAT(b.title, ' ', b.author)) LIKE CONCAT('%',:bookName,'%')")

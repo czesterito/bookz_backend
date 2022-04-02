@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import java.util.Optional;
 
 @RestController
@@ -16,6 +17,7 @@ public class BookController {
 
     private final IBookService bookService;
 
+    @RolesAllowed("user")
     @GetMapping("/")
     public ResponseEntity<?> getAllBooks(){
         try{
@@ -28,6 +30,7 @@ public class BookController {
         }
     }
 
+    @RolesAllowed("user")
     @GetMapping("/{id}")
     public ResponseEntity<?> getBook(@PathVariable Integer id){
         try {
@@ -43,6 +46,7 @@ public class BookController {
         }
     }
 
+    @RolesAllowed("user")
     @PostMapping("/")
     public ResponseEntity<?> createNewBook(@RequestBody Book book){
         try {
@@ -54,6 +58,7 @@ public class BookController {
         }
     }
 
+    @RolesAllowed("user")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteBook(@PathVariable Integer id){
         try {
@@ -70,6 +75,7 @@ public class BookController {
         }
     }
 
+    @RolesAllowed("user")
     @PutMapping("/{id}")
     public ResponseEntity<?> updateBook(@PathVariable Integer id, @RequestBody Book book){
         try {
@@ -84,16 +90,6 @@ public class BookController {
             return errorResponse();
         }
     }
-
-//    @GetMapping("/findBy")
-//    public ResponseEntity<?> searchForBooks(@RequestParam String text, @RequestParam String category,
-//                                            @RequestParam String city, @RequestParam Integer id){
-//        try {
-//            return new ResponseEntity<>(bookService.findBy(text, category, city, id), HttpStatus.OK);
-//        } catch (Exception e){
-//            return errorResponse();
-//        }
-//    }
 
 
 

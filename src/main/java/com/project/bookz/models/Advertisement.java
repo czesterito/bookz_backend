@@ -1,6 +1,9 @@
 package com.project.bookz.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.util.List;
 
 @Entity(name = "ADVERTISEMENT")
 @Table(name = "`ADVERTISEMENT`")
@@ -13,21 +16,23 @@ public class Advertisement {
     private String city;
     @Column(name = "description", nullable = false, columnDefinition = "TEXT")
     private String description;
-    @Column(name = "active")
-    private Boolean active;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", referencedColumnName = "book_id")
     private Book book;
 
+    @OneToMany(mappedBy = "advertisement", cascade = {CascadeType.ALL, CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
+    @JsonIgnore
+    private List<Offer> offer;
+
     public Advertisement() {
     }
 
-    public Advertisement(String city, String description, Boolean active, Book book) {
+    public Advertisement(String city, String description, Boolean active, Book book, List<Offer> offer) {
         this.city = city;
         this.description = description;
-        this.active = active;
         this.book = book;
+        this.offer = offer;
     }
 
     public Integer getAdvertisementId() {
@@ -54,19 +59,19 @@ public class Advertisement {
         this.description = description;
     }
 
-    public Boolean getActive() {
-        return active;
-    }
-
-    public void setActive(Boolean active) {
-        this.active = active;
-    }
-
     public Book getBook() {
         return book;
     }
 
     public void setBook(Book book) {
         this.book = book;
+    }
+
+    public List<Offer> getOffer() {
+        return offer;
+    }
+
+    public void setOffer(List<Offer> offer) {
+        this.offer = offer;
     }
 }

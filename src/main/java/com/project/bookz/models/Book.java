@@ -28,17 +28,21 @@ public class Book {
     @JsonIgnore
     private Advertisement advertisement;
 
+    @OneToOne(mappedBy = "book", cascade = {CascadeType.ALL, CascadeType.DETACH,CascadeType.MERGE,CascadeType.REFRESH})
+    @JsonIgnore
+    private Offer offer;
+
     public Book() {
     }
 
-    public Book(String title, String author, String category, User user, Advertisement advertisement,
-                Boolean taken) {
+    public Book(String title, String author, String category, Boolean taken, User user, Advertisement advertisement, Offer offer) {
         this.title = title;
         this.author = author;
         this.category = category;
+        this.taken = taken;
         this.user = user;
         this.advertisement = advertisement;
-        this.taken = taken;
+        this.offer = offer;
     }
 
     public Integer getBookId() {
@@ -73,6 +77,14 @@ public class Book {
         this.category = category;
     }
 
+    public Boolean getTaken() {
+        return taken;
+    }
+
+    public void setTaken(Boolean taken) {
+        this.taken = taken;
+    }
+
     public User getUser() {
         return user;
     }
@@ -89,11 +101,11 @@ public class Book {
         this.advertisement = advertisement;
     }
 
-    public Boolean getTaken() {
-        return taken;
+    public Offer getOffer() {
+        return offer;
     }
 
-    public void setTaken(Boolean taken) {
-        this.taken = taken;
+    public void setOffer(Offer offer) {
+        this.offer = offer;
     }
 }
